@@ -1,4 +1,4 @@
-package com.peojetospring.dominio;
+package com.projetospring.dominio;
 
 import java.io.Serializable;
 
