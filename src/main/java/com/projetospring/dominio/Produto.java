@@ -1,7 +1,10 @@
 package com.projetospring.dominio;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -36,8 +40,18 @@ public class Produto implements Serializable{
 			joinColumns = @JoinColumn(name="produto_id"),
 			inverseJoinColumns = @JoinColumn(name="categoria_id")
 			)
-	private List<Categoria> categorias;
+	private List<Categoria> categorias = new ArrayList<Categoria>();
 	
+	@OneToOne(mappedBy="id.produto")
+	private Set<ItemPedido> itens = new HashSet<ItemPedido>();
+	
+	public List<Pedido> getPedidos(){
+		List<Pedido> pedidos = new ArrayList<Pedido>();
+		for(ItemPedido item : itens) {
+			pedidos.add(item.getPedido());
+		}
+		return pedidos;
+	}
 	public Produto() {
 	}
 	
@@ -78,6 +92,15 @@ public class Produto implements Serializable{
 	public void setCategorias(List<Categoria> categorias) {
 		this.categorias = categorias;
 	}
+	
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -108,5 +131,4 @@ public class Produto implements Serializable{
 	public String toString() {
 		return "Produto [id=" + id + ", nome=" + nome + ", preco=" + preco + "]";
 	}
-
 }
